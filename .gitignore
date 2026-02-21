@@ -71,3 +71,6 @@ local.settings.json
 *.swp
 *.bak
 *.orig
+
+# Env
+.env
