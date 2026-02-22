@@ -1,4 +1,4 @@
-﻿using Azure.Messaging.ServiceBus;﻿
+﻿using Azure.Messaging.ServiceBus;
 using ServiceBus.Contracts.Messages;
 using Microsoft.Extensions.Configuration;
 
