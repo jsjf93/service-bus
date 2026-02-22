@@ -21,45 +21,65 @@ var connectionString = config.GetConnectionString("AzureServiceBus")
 // 6. Send it
 // 7. Dispose/close clients
 
-Console.Write("Type your message and press Enter to send it: ");
-string? userInput;
+await using var client = new ServiceBusClient(connectionString);
+await using var sender = client.CreateSender(QUEUE_NAME);
 
-do
+string? userInput;
+bool isRunning = true;
+
+while (isRunning)
 {
-    Console.Write("Type your message and press Enter to send it: ");
+    Console.Write("Type your message and press Enter to send it or type 'exit' to quit: ");
     userInput = Console.ReadLine();
 
     if (string.IsNullOrWhiteSpace(userInput))
     {
         Console.WriteLine("Message cannot be empty. Please enter a valid message.");
+        continue;
+    }
+    else if (userInput.Equals("exit", StringComparison.OrdinalIgnoreCase))
+    {
+        isRunning = false;
+        Console.WriteLine("Exiting the application. Goodbye!");
+        continue;
+    }
+
+    await SendTaskMessageAsync(sender, userInput);
+}
+
+static async Task SendTaskMessageAsync(ServiceBusSender sender, string title)
+{
+    var taskMessage = new TaskCreatedMessage(
+        TaskId: Guid.NewGuid(),
+        Title: title,
+        Description: "This task was created to demonstrate sending messages to Azure Service Bus.",
+        AssignedTo: "John Doe",
+        CreatedAt: DateTimeOffset.UtcNow);
+
+    var messageBody = BinaryData.FromObjectAsJson(taskMessage);
+    var serviceBusMessage = new ServiceBusMessage(messageBody)
+    {
+        MessageId = taskMessage.TaskId.ToString(),
+        ContentType = "application/json",
+        Subject = "TaskCreated"
+    };
+
+    try
+    {
+        Console.WriteLine($"Sending TaskCreatedMessage with TaskId: {taskMessage.TaskId}...");
+        await sender.SendMessageAsync(serviceBusMessage);
+        Console.WriteLine($"Sent TaskCreatedMessage with TaskId: {taskMessage.TaskId}");
+    }
+    catch (ServiceBusException ex) when (ex.IsTransient)
+    {
+        Console.WriteLine($"Transient error: {ex.Message}. Could retry sending the message.");
+    }
+    catch (ServiceBusException ex)
+    {
+        Console.WriteLine($"Error sending message: {ex.Message}. Reason: {ex.Reason}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Unexpected error: {ex.Message}");
     }
 }
-while (string.IsNullOrWhiteSpace(userInput));
-
-await using var client = new ServiceBusClient(connectionString);
-
-var sender = client.CreateSender(QUEUE_NAME);
-
-var taskMessage = new TaskCreatedMessage(
-    TaskId: Guid.NewGuid(),
-    Title: userInput,
-    Description: "This task was created to demonstrate sending messages to Azure Service Bus.",
-    AssignedTo: "John Doe",
-    CreatedAt: DateTimeOffset.UtcNow);
-
-var messageBody = BinaryData.FromObjectAsJson(taskMessage);
-
-var serviceBusMessage = new ServiceBusMessage(messageBody);
-
-try
-{
-    Console.WriteLine($"Sending TaskCreatedMessage with TaskId: {taskMessage.TaskId}...");
-    await sender.SendMessageAsync(serviceBusMessage);
-    Console.WriteLine($"Sent TaskCreatedMessage with TaskId: {taskMessage.TaskId}");
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Error sending message: {ex.Message}");
-}
-
-await sender.DisposeAsync();
