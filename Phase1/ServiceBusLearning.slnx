@@ -4,7 +4,4 @@
     <Project Path="src/ServiceBus.Contracts/ServiceBus.Contracts.csproj" />
     <Project Path="src/ServiceBus.Producer/ServiceBus.Producer.csproj" />
   </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/ServiceBus.IntegrationTests/ServiceBus.IntegrationTests.csproj" />
-  </Folder>
 </Solution>
