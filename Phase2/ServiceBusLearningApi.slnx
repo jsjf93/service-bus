@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="ServiceBus.Contracts/ServiceBus.Contracts.csproj" Id="bbf96c87-d6b8-4790-8ca8-fc56b370cd4d" />
+    <Project Path="src/ServiceBus.Api/ServiceBus.Api.csproj" />
+  </Folder>
+</Solution>
