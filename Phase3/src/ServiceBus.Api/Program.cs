@@ -12,7 +12,7 @@ builder.Services.AddSingleton(sp => new ServiceBusClient(builder.Configuration.G
 builder.Services.AddSingleton(sp =>
 {
     var client = sp.GetRequiredService<ServiceBusClient>();
-    return client.CreateSender(builder.Configuration["AzureServiceBus:QueueName"]);
+    return client.CreateSender(builder.Configuration["AzureServiceBus:TopicName"]);
 });
 
 var app = builder.Build();
