@@ -78,7 +78,7 @@ public sealed class EmailNotificationWorker(
                 {
                     ApplicationProperties =
                     {
-                        ["RequiresAssignedTo"] = "true"
+                        ["RequiresAssignedTo"] = true
                     }
                 }
             };
