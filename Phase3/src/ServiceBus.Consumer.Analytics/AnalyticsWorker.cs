@@ -33,7 +33,7 @@ public sealed class AnalyticsWorker(
         processor.ProcessErrorAsync += ProcessErrorAsync;
 
         _processor = processor;
-        await _processor.StartProcessingAsync();
+        await _processor.StartProcessingAsync(ct);
 
         try
         {
