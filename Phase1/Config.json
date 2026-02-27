@@ -10,6 +10,31 @@
               "MaxDeliveryCount": 3
             }
           }
+        ],
+        "Topics": [
+          {
+            "Name": "task-events",
+            "Subscriptions": [
+              {
+                "Name": "email",
+                "Properties": {
+                  "MaxDeliveryCount": 3
+                }
+              },
+              {
+                "Name": "analytics",
+                "Properties": {
+                  "MaxDeliveryCount": 3
+                }
+              },
+              {
+                "Name": "audit",
+                "Properties": {
+                  "MaxDeliveryCount": 3
+                }
+              }
+            ]
+          }
         ]
       }
     ],
