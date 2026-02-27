@@ -67,7 +67,7 @@ public sealed class AnalyticsWorker(
             await Task.Delay(2000);
 
             // Adding artificial error to show that other consumers aren't impacted
-            throw new Exception("Simulated processing failure");
+            //throw new Exception("Simulated processing failure");
 
             var taskCreatedMessage = JsonSerializer.Deserialize<TaskCreatedMessage>(message.Body)
                 ?? throw new JsonException("Failed to deserialize message");
